@@ -51,7 +51,7 @@ controller.responder = function (resource) {
 };
 
 
-
+// Assume express app is in scope.
 app.post('/my-resources', controller.create);
 app.get('/my-resource/:myResourceId', controller.read);
 app.post('/my-resource/:myResourceId', controller.update);
