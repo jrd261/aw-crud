@@ -36,7 +36,7 @@ controller.writer = function (resource) {
   return resource.save();
 };
 
-// Delete?
+// Specify how to delete a resource.
 controller.deleter = function (resource) {
   return resource.remove();
 };
