@@ -1,10 +1,10 @@
 'use strict';
 
-const Controller = function (options) {
+var Controller = function (options) {
 
-  const controller = this;
+  var controller = this;
 
-  const Context = function (request, response, action) {
+  var Context = function (request, response, action) {
     this.request = request;
     this.response = response;
     this.action = action;
@@ -12,7 +12,7 @@ const Controller = function (options) {
   };
 
   this.create = function (request, response, next) {
-    const context = new Context(request, response, 'create');
+    var context = new Context(request, response, 'create');
     return Promise.resolve()
       .then(controller.creator.bind(context))
       .then(function (resource) { context.resource = resource; })
@@ -23,7 +23,7 @@ const Controller = function (options) {
   };
 
   this.read = function (request, response, next) {
-    const context = new Context(request, response, 'read');
+    var context = new Context(request, response, 'read');
     return Promise.resolve()
       .then(controller.reader.bind(context))
       .then(function (resource) { context.resource = resource; })
@@ -32,7 +32,7 @@ const Controller = function (options) {
   };
 
   this.update = function (request, response, next) {
-    const context = new Context(request, response, 'update');
+    var context = new Context(request, response, 'update');
     return Promise.resolve()
       .then(controller.reader.bind(context))
       .then(function (resource) { context.resource = resource; })
@@ -43,7 +43,7 @@ const Controller = function (options) {
   };
 
   this.delete = function (request, reponse, next) {
-    const context = new Context(request, response, 'delete');
+    var context = new Context(request, response, 'delete');
     return Promise.resolve()
       .then(controller.reader.bind(context))
       .then(function (resource) { context.resource = resource; })
