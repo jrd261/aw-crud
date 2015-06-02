@@ -17,6 +17,7 @@ var controller = new Controller({option1: true);
 controller.reader = function () {
   return MyModel.find(this.request.body.myResourceId).then(function (myDoc) {
     if (!myDoc) throw new Error('dagnabit.');
+    return myDoc;
   });
 };
 
