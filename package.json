@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "description": "Simple CRUD abstraction for Express/Restify",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jrd261/aw-crud.git"
   },
   "author": "James Dalessio <jrd261@gmail.com>",
   "license": "MIT"
