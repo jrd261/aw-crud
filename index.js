@@ -81,6 +81,7 @@ const Ctl = function () {
     .then(() => ctl.responder(ctx, ctx.rsc))
     .then(() => ctl.posthook(ctx))
     .catch(next);
+
 };
 
-module.exports.Ctl = Ctl;
+module.exports = () => new Ctl();
