@@ -20,7 +20,7 @@ const Ctl = function () {
   this.writer = () => {};
   this.deleter = () => {};
   this.lister = () => {};
-  this.responder = (ctx) => {
+  this.responder = (ctx, rsc) => {
     if (ctx.act === 'create') {
       ctx.res.status(201);
     } else {
@@ -29,7 +29,7 @@ const Ctl = function () {
     if (ctx.act === 'delete') {
       ctx.res.send();
     } else {
-      ctx.res.send();
+      ctx.res.send(rsc);
     }
   };
 
