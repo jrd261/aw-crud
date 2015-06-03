@@ -9,53 +9,61 @@ Kitchy, yes. Useful, yes.
 // Example with Mongoose models.
 
 var MyModel = require('./MyModel');
-var Controller = require('aw-crud').Controller;
+var Ctl = require('aw-crud').Ctl;
 
-var controller = new Controller({option1: true);
+var ctl = new Ctl();
 
 // Specify how to retrieve a resource.
-controller.reader = function () {
-  return MyModel.find(this.request.body.myResourceId).then(function (myDoc) {
+ctl.reader = function (ctx) {
+  return MyModel.find(ctx.req.body.myResourceId).then(function (myDoc) {
     if (!myDoc) throw new Error('dagnabit.');
     return myDoc;
   });
 };
 
 // Specify how to create the resource.
-controller.creator = function () {
-  return MyModel.create();
+ctl.creator = function () {
+  return new MyModel();
 };
 
 // Specify how to update the resource.
-controller.updater = function (resource) {
-  resource.unsanitizedParameter = req.body.xss_attack;
+ctl.updater = function (ctx, rsc) {
+  rsc.unsanitizedParameter = ctx.req.body.xss_attack;
 };
 
 // Specify how to save the resource.
-controller.writer = function (resource) {
-  return resource.save();
+ctl.writer = function (ctx, rsc) {
+  return rsc.save();
 };
 
 // Specify how to delete a resource.
-controller.deleter = function (resource) {
-  return resource.remove();
+ctl.deleter = function (ctx, rsc) {
+  return rsc.remove();
+};
+
+// Specify how to get collection
+ctl.list = function (ctx) {
+  return MyModel.find().then(function (col) {
+    return {results: col};
+  });
 };
 
 // You can override the way a response is created.
-controller.responder = function (resource) {
-  if (this.action === 'delete' && this.options.option1) {
-    console.log('Hey. Someone deleted something and option1 is truthy.');   
+ctl.responder = function (ctx, rsc) {
+  if (ctx.act === 'delete') {
+    console.log('Deleted!');
   } 
-  this.response.status(223); // Because you feel like making up new status codes.
-  this.response.send(resource); 
+  ctx.res.status(223); // Because you feel like making up new status codes.
+  ctx.res.send(rsc); 
 };
 
 
 // Assume express app is in scope.
-app.post('/my-resources', controller.create);
-app.get('/my-resource/:myResourceId', controller.read);
-app.post('/my-resource/:myResourceId', controller.update);
-app.del('/my-resource/:myResourceId', controller.delete);
+app.post('/my-resources', ctl.create);
+app.get('/my-resource/:myResourceId', ctl.read);
+app.post('/my-resource/:myResourceId', ctl.update);
+app.del('/my-resource/:myResourceId', ctl.delete);
+app.get('/my-resource', ctl.list);
 
 
 ```

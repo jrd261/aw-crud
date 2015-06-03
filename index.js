@@ -1,93 +1,86 @@
 'use strict';
+/* jshint node: true, esnext: true*/
 
-var Controller = function (options) {
+const Ctl = function () {
 
-  var controller = this;
+  const ctl = this;
 
-  var Context = function (request, response, action) {
-    this.request = request;
-    this.response = response;
-    this.action = action;
-    this.options = options;
+  const Ctx = function (req, res, act) {
+    this.req = req;
+    this.res = res;
+    this.act = act;
+    this.rsc = null;
   };
 
-  this.prehook = function () {};
-
-  this.create = function (request, response, next) {
-    var context = new Context(request, response, 'create');
-    return Promise.resolve()
-      .then(controller.prehook.bind(context))
-      .then(controller.creator.bind(context))
-      .then(function (resource) { context.resource = resource; })
-      .then(controller.updater.bind(context)) 
-      .then(controller.writer.bind(context))
-      .then(controller.responder.bind(context))
-      .catch(next);  
+  this.prehook = () => {};
+  this.posthook = () => {};
+  this.creator = () => {};
+  this.updater = () => {};
+  this.reader = () => {};
+  this.writer = () => {};
+  this.deleter = () => {};
+  this.lister = () => {};
+  this.responder = (ctx) => {
+    if (ctx.act === 'create') {
+      ctx.res.status(201);
+    } else {
+      ctx.res.status(200);
+    }
+    if (ctx.act === 'delete') {
+      ctx.res.send();
+    } else {
+      ctx.res.send();
+    }
   };
 
-  this.read = function (request, response, next) {
-    var context = new Context(request, response, 'read');
-    return Promise.resolve()
-      .then(controller.prehook.bind(context))
-      .then(controller.reader.bind(context))
-      .then(function (resource) { context.resource = resource; })
-      .then(controller.responder.bind(context))
-      .catch(next);
-  };
+  this.create = (req, res, next, ctx) => Promise.resolve()
+    .then(() => ctx = new Ctx(req, res, 'create'))
+    .then(() => ctl.prehook(ctx))
+    .then(() => ctl.creator(ctx))
+    .then(rsc => ctx.rsc = rsc)
+    .then(() => ctl.updater(ctx, ctx.rsc)) 
+    .then(() => ctl.writer(ctx, ctx.rsc))  
+    .then(() => ctl.responder(ctx, ctx.rsc))
+    .then(() => ctl.posthook(ctx))
+    .catch(next);  
 
-  this.update = function (request, response, next) {
-    var context = new Context(request, response, 'update');
-    return Promise.resolve()
-      .then(controller.prehook.bind(context))
-      .then(controller.reader.bind(context))
-      .then(function (resource) { context.resource = resource; })
-      .then(controller.updater.bind(context))
-      .then(controller.writer.bind(context))
-      .then(controller.responder.bind(context))
-      .catch(next);
-  };
+  this.read = (req, res, next, ctx) => Promise.resolve()
+    .then(() => ctx = new Ctx(req, res, 'read'))
+    .then(() => ctl.prehook(ctx))
+    .then(() => ctl.reader(ctx))
+    .then(rsc => ctx.rsc = rsc)
+    .then(() => ctl.responder(ctx, ctx.rsc))
+    .then(() => ctl.posthook(ctx))
+    .catch(next);
 
-  this.delete = function (request, response, next) {
-    var context = new Context(request, response, 'delete');
-    return Promise.resolve()
-      .then(controller.prehook.bind(context))
-      .then(controller.reader.bind(context))
-      .then(function (resource) { context.resource = resource; })
-      .then(controller.deleter.bind(context))
-      .then(controller.responder.bind(context))
-      .catch(next);    
-  };
+  this.update = (req, res, next, ctx) => Promise.resolve()
+    .then(() => ctx = new Ctx(req, res, 'read'))
+    .then(() => ctl.prehook(ctx))
+    .then(() => ctl.reader(ctx))
+    .then(rsc => ctx.rsc = rsc)
+    .then(() => ctl.updater(ctx, ctx.rsc))
+    .then(() => ctl.responder(ctx, ctx.rsc))
+    .then(() => ctl.posthook(ctx))
+    .catch(next);
 
-  this.list = function (request, response, next) {
-    var context = new Context(request, response, 'list');
-    return Promise.resolve()
-      .then(controller.prehook.bind(context))
-      .then(controller.lister.bind(context))
-      .then(function (resource) { context.resource = resource; })
-      .then(controller.responder.bind(context))
-      .catch(next);
-  };
+  this.delete = (req, res, next, ctx) => Promise.resolve() 
+    .then(() => ctx = new Ctx(req, res, 'read'))
+    .then(() => ctl.prehook(ctx))
+    .then(() => ctl.reader(ctx))
+    .then(rsc => ctx.rsc = rsc)
+    .then(() => ctl.deleter(ctx, ctx.rsc))
+    .then(() => ctl.responder(ctx, ctx.rsc))
+    .then(() => ctl.posthook(ctx))
+    .catch(next);
 
+  this.list = (req, res, next, ctx) => Promise.resolve() 
+    .then(() => ctx = new Ctx(req, res, 'list'))
+    .then(() => ctl.prehook(ctx))
+    .then(() => ctl.lister(ctx))
+    .then(collection => ctx.rsc = collection)
+    .then(() => ctl.responder(ctx, ctx.rsc))
+    .then(() => ctl.posthook(ctx))
+    .catch(next);
 };
 
-Controller.prototype.responder = function () {
-  if (this.action === 'create') {
-    this.response.status(201);
-  } else {
-    this.response.status(200);
-  }
-  if (this.action === 'delete') {
-    this.response.send();
-  } else {
-    this.response.send(this.resource);
-  }
-};
-
-Controller.prototype.creator = function () {};
-Controller.prototype.updater = function () {};
-Controller.prototype.reader = function () {};
-Controller.prototype.writer = function () {};
-Controller.prototype.deleter = function () {};
-Controller.prototype.lister = function () {};
-
-module.exports.Controller = Controller;
+module.exports.Ctl = Ctl;
