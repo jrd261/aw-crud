@@ -64,7 +64,7 @@ const Ctl = function () {
     .catch(next);
 
   this.delete = (req, res, next, ctx) => Promise.resolve() 
-    .then(() => ctx = new Ctx(req, res, 'read'))
+    .then(() => ctx = new Ctx(req, res, 'delete'))
     .then(() => ctl.prehook(ctx))
     .then(() => ctl.reader(ctx))
     .then(rsc => ctx.rsc = rsc)
