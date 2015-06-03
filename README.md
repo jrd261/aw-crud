@@ -9,9 +9,7 @@ Kitchy, yes. Useful, yes.
 // Example with Mongoose models.
 
 var MyModel = require('./MyModel');
-var Ctl = require('aw-crud').Ctl;
-
-var ctl = new Ctl();
+var ctl = require('aw-crud')();
 
 // Specify how to retrieve a resource.
 ctl.reader = function (ctx) {
