@@ -59,6 +59,7 @@ const Ctl = function () {
     .then(() => ctl.reader(ctx))
     .then(rsc => ctx.rsc = rsc)
     .then(() => ctl.updater(ctx, ctx.rsc))
+    .then(() => ctl.writer(ctx, ctx.rsc))  
     .then(() => ctl.responder(ctx, ctx.rsc))
     .then(() => ctl.posthook(ctx))
     .catch(next);
